@@ -66,13 +66,18 @@ rstudio_active_sessions() {
 
 
 # wrapper for rstudio-server
+# intercepts active-sessions to enrich with LDAP display names
 # intercepts kill-session, suspend-session, force-suspend-session, force-suspend
 # and strips username_displayName:sessionId tokens down to bare sessionId
 # all other subcommands pass through unchanged
+# example: rstudio-server active-sessions
 # example: rstudio-server kill-session vi1570_Kausrud,_Kyrre:17cfecfc78a31a8d2ac2c
 
 rstudio-server() {
     case "${1}" in
+        active-sessions)
+            rstudio_active_sessions
+            ;;
         kill-session|suspend-session|force-suspend-session|force-suspend)
             local sid ; sid="${2##*:}"
             "${RSTUDIO_SERVER_BIN}" "${1}" "${sid}"
